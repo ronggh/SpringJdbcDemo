@@ -18,7 +18,6 @@ public class Test {
         //从容器获取目标对象
         UserService userService = (UserService) applicationContext.getBean("userService");
 
-
         // 1. test add user
         // testAdd(userService);
 
@@ -44,9 +43,13 @@ public class Test {
 //        testBatchUpdate(userService);
 
         // 9. tests batch delete records
-        testBatchDelete(userService);
+//        testBatchDelete(userService);
+
+        // 10. 测试事务
+        userService.testTrans();
 
     }
+
 
     // test batch delete records
     private static void testBatchDelete(UserService userService) {

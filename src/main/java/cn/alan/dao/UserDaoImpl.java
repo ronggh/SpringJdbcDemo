@@ -106,6 +106,19 @@ public class UserDaoImpl implements UserDao {
         }
         return jdbcTemplate.batchUpdate(sql, args);
     }
+
+    // 下面是测试事务的两个方法:
+    // change1,把bookId = 1的状态改为1
+    // change2,把bookId = 3的状态改为3
+    // 要求，这两个操作要么同时成功，否则要回滚到原来的状态
+    public void change1(){
+        String sql = "update t_book set status = '1'  where bookId= '1'";
+        jdbcTemplate.update(sql);
+    }
+    public void change2(){
+        String sql = "update t_book set status = '3'  where bookId= '3'";
+        jdbcTemplate.update(sql);
+    }
 }
 
 class UserRowMap implements RowMapper<User> {
@@ -116,4 +129,6 @@ class UserRowMap implements RowMapper<User> {
         User user = new User(bookId, bookName, status);
         return user;
     }
+
+
 }

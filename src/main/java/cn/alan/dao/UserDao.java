@@ -23,4 +23,8 @@ public interface UserDao {
     int[] batchUpdate(List<User> list);
     int[] batchDelete(List<User> list);
 
+    // 测试事务执行用
+    void change1();
+    void change2();
+
 }
