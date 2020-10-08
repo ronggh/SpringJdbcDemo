@@ -3,15 +3,19 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:aop="http://www.springframework.org/schema/aop"
-             xsi:schemaLocation="http://www.springframework.org/schema/beans
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/context
                            http://www.springframework.org/schema/context/spring-context.xsd
                            http://www.springframework.org/schema/aop
-                           http://www.springframework.org/schema/aop/spring-aop.xsd">
+                           http://www.springframework.org/schema/aop/spring-aop.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <!--使用context命名空间，通过spring扫描指定包及其所有子包下所有bean的实现类，进行注解解析-->
     <context:component-scan base-package="cn.alan"/>
+
 
     <!-- 配置数据源-->
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
@@ -29,4 +33,28 @@
     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
         <property name="dataSource" ref="dataSource"></property>
     </bean>
+
+    <!-- 1. 开启事务管理器 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!-- 注入数据源-->
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+    <!--2.配置通知-->
+    <tx:advice id="txadvice">
+        <!--配置事务参数-->
+        <tx:attributes>
+            <!--指定哪种规则的方法上面添加事务-->
+            <tx:method name="accountMoney" propagation="REQUIRED"/>
+            <!--<tx:method name="account*"/>-->
+        </tx:attributes>
+    </tx:advice>
+    <!--3. 配置切入点和切面-->
+    <aop:config>
+        <!--配置切入点-->
+        <aop:pointcut id="pt" expression="execution(* cn.alan.service.UserService.*(..))"/>
+        <!--配置切面-->
+        <aop:advisor advice-ref="txadvice" pointcut-ref="pt"/>
+    </aop:config>
+    <!-- 开启事务注解-->
+    <tx:annotation-driven transaction-manager="transactionManager"></tx:annotation-driven>
 </beans>

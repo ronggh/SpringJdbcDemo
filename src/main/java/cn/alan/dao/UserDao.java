@@ -1,30 +1,25 @@
 package cn.alan.dao;
 
-import cn.alan.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
+@Repository
+public class UserDao {
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
-public interface UserDao {
-    int add(User user);
-    int update(User user);
-    int delete(User user);
+    // 扣钱的方法
+    public void reduceMoney(){
+        String sql = "update t_user set money = money - ? where username = ? ";
+        jdbcTemplate.update(sql,100,"Luck");
+        System.out.println("Luck 转出成功....");
+    }
 
-    // 查询：返回一个值
-    // 例：查询记录数
-    int queryCount();
-
-    // 查询：返回对象（一条数据）
-    User queryById(String id);
-    // 查询：返回对象集合（多条数据）
-    List<User> queryBySql(String sql);
-
-    // 批量操作
-    int[] batchAdd(List<User> list);
-    int[] batchUpdate(List<User> list);
-    int[] batchDelete(List<User> list);
-
-    // 测试事务执行用
-    void change1();
-    void change2();
-
+    // 加钱的方法
+    public void addMoney(){
+        String sql = "update t_user set money = money + ? where username = ? ";
+        jdbcTemplate.update(sql,100,"Mary");
+        System.out.println("转入到 Mary 成功....");
+    }
 }
